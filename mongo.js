@@ -7,7 +7,7 @@ if (process.argv.length < 3) {
 }
 
 const url =
-  `mongodb+srv://nobowling:J@n1Adm1n9@mikawaltari-tuiv4.mongodb.net/mikawaltari?retryWrites=true&w=majority`
+  `mongodb+srv://KÄYTTÄJÄTUNNUS:SALASANA@mikawaltari-tuiv4.mongodb.net/mikawaltari?retryWrites=true&w=majority`
 
 mongoose.connect(url, { useNewUrlParser: true })
 
