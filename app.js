@@ -7,6 +7,7 @@ const membersRouter = require('./controllers/members')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
+const cors = require('cors');
 
 logger.info('Connecting to', config.MONGODB_URI)
 
@@ -17,6 +18,9 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .catch((error) => {
     logger.error('Error connection to MongoDB:', error.message)
   })
+
+// TODO: Make sure this cors setting is fine for production
+app.use(cors({ credentials: true, origin: 'http://localhost:8080' }));
 
 app.use(express.static('build'))
 app.use(bodyParser.json())
