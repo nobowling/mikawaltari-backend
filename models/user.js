@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
-const memberSchema = mongoose.Schema({
-  firstName: String,
-  lastName: String,
+const userSchema = mongoose.Schema({
+  username: String,
   favoriteAuthor: String,
-  motto: String
+  motto: String,
+  password: String
 })
 
-memberSchema.set('toJSON', {
+userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -15,6 +15,6 @@ memberSchema.set('toJSON', {
   }
 })
 
-const Member = mongoose.model('Member', memberSchema)
+const User = mongoose.model('User', userSchema)
 
-module.exports = Member
+module.exports = User

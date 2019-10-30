@@ -53,7 +53,7 @@ booksRouter.delete('/:id', async (request, response, next) => {
 })
 
 booksRouter.put('/:id', (request, response, next) => {
-  const body = request.body
+  const { body } = request
 
   const book = {
     title: body.title,
