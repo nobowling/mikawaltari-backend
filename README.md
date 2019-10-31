@@ -7,12 +7,12 @@ Back end for the web page of the infamous book club, Mikä Waltari.
 npm i
 ```
 
-# Run server:
+# Run server
 ```
 npm start
 ```
 
-# Run server in development mode:
+# Run server in development mode
 ```
 npm run watch
 ```
