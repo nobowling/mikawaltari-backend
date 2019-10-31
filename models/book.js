@@ -4,8 +4,17 @@ const bookSchema = new mongoose.Schema({
   title: String,
   author: String,
   year: Number,
-  votes: [Number],
-  rating: Number
+  votes: [
+    {
+      name: String,
+      vote: Number
+    }
+  ],
+  rating: Number,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 bookSchema.set('toJSON', {

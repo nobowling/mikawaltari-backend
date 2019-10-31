@@ -6,8 +6,7 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-const url =
-  `mongodb+srv://KÄYTTÄJÄTUNNUS:SALASANA@mikawaltari-tuiv4.mongodb.net/mikawaltari?retryWrites=true&w=majority`
+const url = 'mongodb+srv://KÄYTTÄJÄTUNNUS:SALASANA@mikawaltari-tuiv4.mongodb.net/mikawaltari?retryWrites=true&w=majority'
 
 mongoose.connect(url, { useNewUrlParser: true })
 
