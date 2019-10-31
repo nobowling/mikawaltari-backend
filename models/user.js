@@ -1,19 +1,20 @@
 const mongoose = require('mongoose')
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: String,
-  favoriteAuthor: String,
   motto: String,
-  password: String
+  favoriteAuthor: String,
+  passwordHash: String,
 })
 
-userSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
+userSchema.statics.format = (user) => {
+  return {
+    id: user.id,
+    username: user.username,
+    motto: user.motto,
+    favoriteAuthor: user.favoriteAuthor
   }
-})
+}
 
 const User = mongoose.model('User', userSchema)
 
