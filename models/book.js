@@ -6,15 +6,11 @@ const bookSchema = new mongoose.Schema({
   year: Number,
   votes: [
     {
-      name: String,
+      _id: false,
+      userId: String,
       vote: Number
     }
-  ],
-  rating: Number,
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+  ]
 })
 
 bookSchema.set('toJSON', {
