@@ -1,5 +1,6 @@
 const booksRouter = require('express').Router()
 const Book = require('../models/book')
+const User = require('../models/user')
 
 booksRouter.post('/', async (request, response, next) => {
   const body = request.body
@@ -12,8 +13,7 @@ booksRouter.post('/', async (request, response, next) => {
     title: body.title,
     author: body.author,
     year: body.year,
-    votes: body.votes,
-    rating: body.rating
+    votes: body.votes
   })
 
   try {
@@ -52,22 +52,33 @@ booksRouter.delete('/:id', async (request, response, next) => {
   }
 })
 
-booksRouter.put('/:id', (request, response, next) => {
+booksRouter.put('/:id', async (request, response, next) => {
   const { body } = request
 
-  const book = {
-    title: body.title,
-    author: body.author,
-    year: body.year,
-    votes: body.votes,
-    rating: body.rating
-  }
+  const voteBook = [{ 
+    userId: body.userId,
+    vote: body.vote
+  }]
+  const voteUser = [{
+    bookId: body.bookId,
+    vote: body.vote
+  }]
 
-  Book.findByIdAndUpdate(request.params.id, book, { new: true })
-    .then(updatedBook => {
-      response.json(updatedBook.toJSON())
-    })
-    .catch(error => next(error))
+  const book = await Book.findById(body.bookId)
+  const booksUpdatedVotes = book.votes.concat(voteBook)
+  const user = await User.findById(body.userId)
+  const usersUpdatedVotes = user.votes.concat(voteUser)
+
+  Book.findByIdAndUpdate(body.bookId, { votes: booksUpdatedVotes }, { new: true })
+  .then(updatedBook => {
+    response.json(updatedBook.toJSON())
+  })
+  User.findByIdAndUpdate(body.userId, {votes: usersUpdatedVotes }, { new: true })
+  .then(updatedUser => {
+    response.json(updatedUser.toJSON())
+  })
+  .catch(error => next(error))
+  
 })
 
 module.exports = booksRouter
