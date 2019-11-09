@@ -10,14 +10,12 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
   try {
-    const body = request.body
+    const { body } = request
 
-    const existingUser = await User.find({
-        username: body.username
-    })
+    const existingUser = await User.find({ username: body.username })
     if (existingUser.length > 0) {
         return response.status(400).json({
-            error: 'username must be unique'
+            error: 'Username must be unique'
         })
     }
 
@@ -33,12 +31,57 @@ usersRouter.post('/', async (request, response) => {
 
     const savedUser = await user.save()
 
-    response.json(User.format(savedUser))
-  } catch (exception) {
-      console.log(exception)
+    response.json(savedUser.toJSON())
+  } catch (error) {
       response.status(500).json({
-        error: 'something went wrong...'
+        error: 'Something went wrong when creating new user'
       })
+  }
+})
+
+usersRouter.get('/:id', async (request, response, next) => {
+  try {
+    const user = await User.findById(request.params.id)
+
+    if (user) {
+      response.json(user.toJSON())
+    } else {
+      response.status(404).end()
+    }
+  } catch (error) {
+    next(error)
+  }
+})
+
+usersRouter.delete('/:id', async (request, response, next) => {
+  try {
+    await User.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
+usersRouter.put('/:id', async (request, response, next) => {
+  try {
+  const { body } = request
+
+  const user = await User.findById(request.params.id)
+
+  const updateUser = {
+    username: body.username,
+    motto: body.motto,
+    favoriteAuthor: body.favoriteAuthor,
+    passwordHash: user.passwordHash,
+    votes: body.votes
+  }
+
+  User.findByIdAndUpdate(request.params.id, updateUser, { new: true })
+    .then(updatedUser => {
+      response.json(updatedUser)
+    })
+  } catch (error) {
+    next(error)
   }
 })
 
