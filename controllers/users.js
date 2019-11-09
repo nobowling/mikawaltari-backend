@@ -26,6 +26,7 @@ usersRouter.post('/', async (request, response) => {
       username: body.username,
       motto: body.motto,
       favoriteAuthor: body.favoriteAuthor,
+      active: true,
       passwordHash
     })
 
@@ -55,8 +56,10 @@ usersRouter.get('/:id', async (request, response, next) => {
 
 usersRouter.delete('/:id', async (request, response, next) => {
   try {
-    await User.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+    User.findByIdAndUpdate(request.params.id, { active: false }, { new: true })
+    .then(deletedUser => {
+      response.json(deletedUser.toJSON())
+    })
   } catch (error) {
     next(error)
   }
@@ -73,6 +76,7 @@ usersRouter.put('/:id', async (request, response, next) => {
     motto: body.motto,
     favoriteAuthor: body.favoriteAuthor,
     passwordHash: user.passwordHash,
+    active: user.active,
     votes: body.votes
   }
 

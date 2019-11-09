@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   motto: String,
   favoriteAuthor: String,
   passwordHash: String,
+  active: Boolean,
   votes: [
     {
       _id: false,
