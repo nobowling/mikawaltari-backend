@@ -19,8 +19,8 @@ booksRouter.post('/', async (request, response, next) => {
   try {
     const savedBook = await book.save()
     response.json(savedBook.toJSON())
-  } catch (exception) {
-    next(exception)
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -38,8 +38,8 @@ booksRouter.get('/:id', async (request, response, next) => {
     } else {
       response.status(404).end()
     }
-  } catch (exception) {
-    next(exception)
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -47,12 +47,13 @@ booksRouter.delete('/:id', async (request, response, next) => {
   try {
     await Book.findByIdAndRemove(request.params.id)
     response.status(204).end()
-  } catch (exception) {
-    next(exception)
+  } catch (error) {
+    next(error)
   }
 })
 
-booksRouter.put('/:id', async (request, response, next) => {
+booksRouter.post('/:id', async (request, response, next) => {
+  try {
   const { body } = request
 
   const voteBook = [{ 
@@ -69,6 +70,9 @@ booksRouter.put('/:id', async (request, response, next) => {
   const user = await User.findById(body.userId)
   const usersUpdatedVotes = user.votes.concat(voteUser)
 
+    const bookVoters = book.votes.map(x => x.userId)
+    if (bookVoters.includes(user.id)) throw new Error('You have already voted this book!')
+
   Book.findByIdAndUpdate(body.bookId, { votes: booksUpdatedVotes }, { new: true })
   .then(updatedBook => {
     response.json(updatedBook.toJSON())
@@ -77,8 +81,29 @@ booksRouter.put('/:id', async (request, response, next) => {
   .then(updatedUser => {
     response.json(updatedUser.toJSON())
   })
-  .catch(error => next(error))
+  } catch (error) {
+  next(error)
+  }
+})
+
+booksRouter.put('/:id', async (request, response, next) => {
+  try {
+  const { body } = request
+
+  const updateBook = {
+    title: body.title,
+    author: body.author,
+    year: body.year,
+    votes: body.votes
+  }
   
+  Book.findByIdAndUpdate(request.params.id, updateBook, { new: true })
+    .then(updatedBook => {
+      response.json(updatedBook)
+    })
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = booksRouter
