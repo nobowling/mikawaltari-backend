@@ -90,11 +90,13 @@ booksRouter.put('/:id', async (request, response, next) => {
   try {
   const { body } = request
 
+  const book = await Book.findById(request.params.id)
+
   const updateBook = {
     title: body.title,
     author: body.author,
     year: body.year,
-    votes: body.votes
+    votes: book.votes
   }
   
   Book.findByIdAndUpdate(request.params.id, updateBook, { new: true })
