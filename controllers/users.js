@@ -13,11 +13,7 @@ usersRouter.post('/', async (request, response) => {
     const { body } = request
 
     const existingUser = await User.find({ username: body.username })
-    if (existingUser.length > 0) {
-        return response.status(400).json({
-            error: 'Username must be unique'
-        })
-    }
+    if (existingUser.length > 0) throw new Error('Username must be unique')
 
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
@@ -33,10 +29,8 @@ usersRouter.post('/', async (request, response) => {
     const savedUser = await user.save()
 
     response.json(savedUser.toJSON())
-  } catch (error) {
-      response.status(500).json({
-        error: 'Something went wrong when creating new user'
-      })
+  } catch (err) {
+      response.status(500).send(err)
   }
 })
 
@@ -77,7 +71,7 @@ usersRouter.put('/:id', async (request, response, next) => {
     favoriteAuthor: body.favoriteAuthor,
     passwordHash: user.passwordHash,
     active: user.active,
-    votes: body.votes
+    votes: user.votes
   }
 
   User.findByIdAndUpdate(request.params.id, updateUser, { new: true })

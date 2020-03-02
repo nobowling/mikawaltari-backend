@@ -1,6 +1,7 @@
 const booksRouter = require('express').Router()
 const Book = require('../models/book')
 const User = require('../models/user')
+const moment = require('moment')
 
 booksRouter.post('/', async (request, response, next) => {
   const body = request.body
@@ -13,7 +14,8 @@ booksRouter.post('/', async (request, response, next) => {
     title: body.title,
     author: body.author,
     year: body.year,
-    votes: body.votes
+    votes: body.votes,
+    meetingDate: moment(body.meetingDate).format('l')
   })
 
   try {
@@ -54,33 +56,33 @@ booksRouter.delete('/:id', async (request, response, next) => {
 
 booksRouter.post('/:id', async (request, response, next) => {
   try {
-  const { body } = request
+    const { body } = request
 
-  const voteBook = [{ 
-    userId: body.userId,
-    vote: body.vote
-  }]
-  const voteUser = [{
-    bookId: body.bookId,
-    vote: body.vote
-  }]
+    const voteBook = [{ 
+      userId: body.userId,
+      vote: body.vote
+    }]
+    const voteUser = [{
+      bookId: body.bookId,
+      vote: body.vote
+    }]
 
-  const book = await Book.findById(body.bookId)
-  const booksUpdatedVotes = book.votes.concat(voteBook)
-  const user = await User.findById(body.userId)
-  const usersUpdatedVotes = user.votes.concat(voteUser)
+    const book = await Book.findById(body.bookId)
+    const booksUpdatedVotes = book.votes.concat(voteBook)
+    const user = await User.findById(body.userId)
+    const usersUpdatedVotes = user.votes.concat(voteUser)
 
     const bookVoters = book.votes.map(x => x.userId)
-    if (bookVoters.includes(user.id)) throw new Error('You have already voted this book!')
+    if (bookVoters.includes(user.id)) throw new Error('User has already voted this book!')
 
-  Book.findByIdAndUpdate(body.bookId, { votes: booksUpdatedVotes }, { new: true })
-  .then(updatedBook => {
-    response.json(updatedBook.toJSON())
-  })
-  User.findByIdAndUpdate(body.userId, {votes: usersUpdatedVotes }, { new: true })
-  .then(updatedUser => {
-    response.json(updatedUser.toJSON())
-  })
+    Book.findByIdAndUpdate(body.bookId, { votes: booksUpdatedVotes }, { new: true })
+    .then(updatedBook => {
+      response.json(updatedBook.toJSON())
+    })
+    User.findByIdAndUpdate(body.userId, {votes: usersUpdatedVotes }, { new: true })
+    .then(updatedUser => {
+      response.json(updatedUser.toJSON())
+    })
   } catch (error) {
   next(error)
   }
@@ -96,9 +98,10 @@ booksRouter.put('/:id', async (request, response, next) => {
     title: body.title,
     author: body.author,
     year: body.year,
-    votes: book.votes
+    votes: book.votes,
+    meetingDate: book.meetingDate
   }
-  
+
   Book.findByIdAndUpdate(request.params.id, updateBook, { new: true })
     .then(updatedBook => {
       response.json(updatedBook)

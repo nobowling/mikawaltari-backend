@@ -10,7 +10,8 @@ const bookSchema = new mongoose.Schema({
       userId: String,
       vote: Number
     }
-  ]
+  ],
+  meetingDate: Date
 })
 
 bookSchema.set('toJSON', {
