@@ -28,7 +28,19 @@ loginRouter.post('/', async (request, response) => {
       .send({ token, username: user.username })
   } catch (error) {
     response
-      .status(500).json({error: 'Internal server error.' })
+      .status(500).json({ error: 'Internal server error.' })
+  }
+})
+
+loginRouter.get('/verify-token/:token', async (request, response) => {
+  try {
+    const { token } = request.params
+
+    jwt.verify(token, process.env.SECRET)
+
+    response.sendStatus(200)
+  } catch (error) {
+    response.status(403).json({ error: 'Forbidden' })
   }
 })
 
