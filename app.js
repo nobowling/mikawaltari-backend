@@ -23,7 +23,7 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
 // TODO: Make sure this cors setting is fine for production
 app.use(cors({ credentials: true, origin: 'http://localhost:8080' }));
 
-app.use(express.static('build'))
+app.use(express.static('dist'))
 app.use(bodyParser.json())
 app.use(middleware.requestLogger)
 app.use('/api/users', usersRouter)
