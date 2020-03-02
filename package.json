@@ -1,6 +1,9 @@
 {
   "name": "mikawaltari-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.16.1"
+  },
   "description": "Backend for Mika Waltari book club app",
   "main": "index.js",
   "scripts": {
